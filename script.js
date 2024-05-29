@@ -37,23 +37,24 @@ let Checkboard = (function(){
     return {place, displayBoard, occupationStatus};
 })();
 
-let Player = function(XorO){
+let Player = function(XorO, botOrNot){
     const playerMoveType = XorO;
+    let bot = botOrNot;
 
     let move = (boxNumber) => {
         Checkboard.place(boxNumber, playerMoveType);
     }
 
-    return {move, playerMoveType};
+    return {move, playerMoveType, bot};
 };
 
-let GameManager = function(p1, p2, board){
+let GameManager = function(board){
     let winningSequences = ["123", "159", "147", "258", 
                             "357", "369", "456", "789"]
     let player1Sequence = "";
     let player2Sequence = "";
-    let player1 = p1;
-    let player2 = p2;
+    let player1;
+    let player2;
     let gameboard = board;
     const movesMax = 9;
     let movesTracker = 0;
@@ -85,18 +86,42 @@ let GameManager = function(p1, p2, board){
         checkIfWin(player1Sequence, player2Sequence);
     }
 
-    return {parseBoard};
+    let startGame = () => {
+        console.log("Welcome to Tic Tac Toe!");
+
+        let botAnswer = '';
+        while ((botAnswer !== "Y") && (botAnswer != "N")) {
+            botAnswer = prompt("Play against a bot? Y/N").toLocaleUpperCase();
+            console.log(botAnswer);
+        };
+
+        let moveTypeAnswer = '';
+        while ((moveTypeAnswer !== "X") && (moveTypeAnswer !== "O")) {
+            moveTypeAnswer = prompt("Do you want to be X or O?").toLocaleUpperCase();
+            console.log(moveTypeAnswer);
+        }
+
+        let player2IsBot;
+        let oppositeMoveType;
+
+        if (botAnswer === "Y") {
+            player2IsBot = true;
+        } else {
+            player2IsBot = false
+        };
+
+        if (moveTypeAnswer === "X") {
+            oppositeMoveType = "O";
+        } else {
+            oppositeMoveType = "X";
+        }
+
+        player1 = Player(moveTypeAnswer, false);
+        player2 = Player(oppositeMoveType, player2IsBot);
+    }
+
+    return {parseBoard, startGame};
 };
 
-Checkboard.displayBoard();
-
-let player1 = Player("X");
-player1.move(4);
-
-let player2 = Player("O");
-player2.move(3);
-player2.move(1);
-player2.move(2);
-
-let gameManager = GameManager(player1, player2, Checkboard);
-gameManager.parseBoard();
+let gameManager = GameManager();
+gameManager.startGame(Checkboard);
