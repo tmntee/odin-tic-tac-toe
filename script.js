@@ -5,7 +5,7 @@ let Checkboard = (function(){
                         box(7, false, ' '), box(8, false, ' '), box(9, false, ' ')];
 
     let place = (boxNumber, player) => {
-        let affectedBox = boardBoxes.find((box) => box.number == boxNumber);
+        let affectedBox = boardBoxes.find((b) => b.number === boxNumber);;
         if (affectedBox.occupied === false) {
             affectedBox.occupied = true;
             affectedBox.XorO = player;
@@ -34,14 +34,40 @@ let Checkboard = (function(){
         return boxStatuses;
     }
 
-    return {place, displayBoard, occupationStatus};
+    
+let availableIndexes = () => {
+    let freeSpaces = boardBoxes.map((box) => {
+        if (box.occupied === false) {
+            return box.number;
+        } });
+    
+    console.log(freeSpaces);
+        return freeSpaces;
+    }
+
+
+    return {boardBoxes, place, displayBoard, occupationStatus, availableIndexes};
 })();
 
 let Player = function(XorO, botOrNot){
     const playerMoveType = XorO;
     let bot = botOrNot;
 
-    let move = (boxNumber) => {
+    let move = () => {
+        let boxNumber; 
+        if (botOrNot === false) {
+            let selectedBox;
+            while (/[1-9]/.test(selectedBox) === false && Checkboard.availableIndexes().includes(selectedBox) === false) {
+                selectedBox = prompt("Select a space to place your move. 1-9");
+            }
+            boxNumber = Number(selectedBox);
+
+        } else {
+            let randomIndex = Math.floor(Math.random() * Checkboard.availableIndexes().length);
+            boxNumber = Checkboard.availableIndexes().at(randomIndex);
+        }
+
+        console.log(boxNumber);
         Checkboard.place(boxNumber, playerMoveType);
     }
 
@@ -53,29 +79,24 @@ let GameManager = function(board){
                             "357", "369", "456", "789"]
     let player1Sequence = "";
     let player2Sequence = "";
-    let player1;
-    let player2;
-    let gameboard = board;
+    let player1, player2;
+    let firstPlayer, secondPlayer;
     const movesMax = 9;
     let movesTracker = 0;
+    let winner;
 
     let checkIfWin = function(sequence1, sequence2) {
-
-        let winner = ""
         winningSequences.forEach((s) => {
             if (sequence1 === s) {
-                winner = "Player 1";
+                winner = "Player 1 Wins!";
             } else if (sequence2 === s) {
-                winner = "Player 2";
+                winner = "Player 2 Wins!";
             }
         })
-
-        if (winner != "");
-        console.log(`${winner} Wins!`);
     }
 
     let parseBoard = () => {
-        let statuses = gameboard.occupationStatus();
+        let statuses = Checkboard.occupationStatus();
         statuses.forEach((status) => {
             if (status.playerOccupying === player1.playerMoveType) {
                 player1Sequence += `${status.boxNumber}`;
@@ -86,7 +107,11 @@ let GameManager = function(board){
         checkIfWin(player1Sequence, player2Sequence);
     }
 
-    let startGame = () => {
+    let rollChance = () => {
+        return Math.floor(Math.random() * 10);
+    }
+
+    let gameSetup = () => {
         console.log("Welcome to Tic Tac Toe!");
 
         let botAnswer = '';
@@ -118,10 +143,53 @@ let GameManager = function(board){
 
         player1 = Player(moveTypeAnswer, false);
         player2 = Player(oppositeMoveType, player2IsBot);
+        startGame();
     }
 
-    return {parseBoard, startGame};
-};
+    let determinePlayerTurn = (moveNumber) => {
+        let turnDeterminer = (moveNumber % 2) 
+        switch (turnDeterminer) {
+            case 0:
+                playerMove(secondPlayer);
+                break;
 
-let gameManager = GameManager();
-gameManager.startGame(Checkboard);
+            case 1:
+                playerMove(firstPlayer);
+                break;
+        }
+    }
+
+    let startGame = () => {
+        let dice = rollChance();
+
+        if (dice < 5) {
+            console.log("Player 2 goes first.")
+            firstPlayer = player2;
+            secondPlayer = player1;
+        } else {
+            console.log("Player 1 goes first.")
+            firstPlayer = player1;
+            secondPlayer = player2;
+        }
+
+        for (let i = 0; i < movesMax; i++) {
+            determinePlayerTurn(i);
+        }
+        
+
+        if (movesTracker === movesMax) {
+            winner = "It's a tie."
+        }
+
+        console.log(`${winner}`);
+    }
+
+    let playerMove = (p) => {
+        p.move();
+        parseBoard();
+    }
+        
+    return {parseBoard, gameSetup};
+};
+let gameManager = GameManager(Checkboard);
+gameManager.gameSetup();
