@@ -34,3 +34,7 @@ let Player = function(XorO){
 
 let player1 = Player("X");
 player1.move(3);
+
+
+let GameManager = function(){
+}
