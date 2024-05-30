@@ -38,7 +38,14 @@ let Checkboard = (function(){
         return boxStatuses;
     }
 
-    return {place, displayBoard, occupationStatus};
+    let restartBoard = () => {
+        boardBoxes.forEach((box) => {
+            box.occupied = false;
+            box.XorO = ' ';
+        })
+    }
+
+    return {place, displayBoard, occupationStatus, restartBoard};
 })();
 
 let Player = function(XorO, botOrNot){
@@ -64,7 +71,7 @@ let Player = function(XorO, botOrNot){
     return {move, playerMoveType, bot};
 };
 
-let GameManager = function(board){
+let GameManager = (function(){
     let winningSequences = ["123", "159", "147", "258", 
                             "357", "369", "456", "789"]
 
@@ -73,7 +80,7 @@ let GameManager = function(board){
     const movesMax = 9;
     let movesTracker = 0;
     let winner;
-
+    let winOrNot;
 
     let checkIfWin = () => {
         let player1Sequence = "";
@@ -86,7 +93,6 @@ let GameManager = function(board){
                 player2Sequence += `${status.boxNumber}`;
             } 
         })
-        let winOrNot;
 
         for (let i = 0; i < winningSequences.length; i++) {
             if (player1Sequence === winningSequences.at(i)) {
@@ -97,9 +103,9 @@ let GameManager = function(board){
                 winner = "Player 2 Wins!";
                 winOrNot = true;
                 break;
-            } else {
-                winOrNot = false;
             }
+            
+            winOrNot = false;
         }
 
         return winOrNot;
@@ -189,8 +195,10 @@ let GameManager = function(board){
         p.move();
         console.log(`Player ${p.playerMoveType} has gone.`)
     }
-        
+
     return {gameSetup};
-};
-let gameManager = GameManager(Checkboard);
-gameManager.gameSetup();
+})();
+
+GameManager.gameSetup();
+Checkboard.restartBoard();
+GameManager.gameSetup();
