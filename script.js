@@ -4,17 +4,21 @@ let Checkboard = (function(){
                         box(4, false, ' '), box(5, false, ' '), box(6, false, ' '),
                         box(7, false, ' '), box(8, false, ' '), box(9, false, ' ')];
 
-    let place = (boxNumber, player) => {
-        let affectedBox = boardBoxes.find((b) => b.number === boxNumber);;
-        if (affectedBox.occupied === false) {
-            affectedBox.occupied = true;
-            affectedBox.XorO = player;
-            displayBoard();
+    let place = (boxNumber, playerType) => {
+        let affectedBox = boardBoxes.find((b) => b.number === boxNumber);
+        if (affectedBox !== undefined && affectedBox !== NaN) {
+            if (affectedBox.occupied === false) {
+                affectedBox.occupied = true;
+                affectedBox.XorO = playerType;
+                displayBoard();
+                return true;
+            } else {
+                console.log("Spot is already occupied.");
+                return false;
+            }
         } else {
-            console.log("Spot is already occupied");
+            return false;
         }
-        
-
     }
 
     let displayBoard = function() {
@@ -34,19 +38,7 @@ let Checkboard = (function(){
         return boxStatuses;
     }
 
-    
-let availableIndexes = () => {
-    let freeSpaces = boardBoxes.map((box) => {
-        if (box.occupied === false) {
-            return box.number;
-        } });
-    
-    console.log(freeSpaces);
-        return freeSpaces;
-    }
-
-
-    return {boardBoxes, place, displayBoard, occupationStatus, availableIndexes};
+    return {place, displayBoard, occupationStatus};
 })();
 
 let Player = function(XorO, botOrNot){
@@ -54,21 +46,19 @@ let Player = function(XorO, botOrNot){
     let bot = botOrNot;
 
     let move = () => {
-        let boxNumber; 
+        let boxNumber = ''; 
         if (botOrNot === false) {
-            let selectedBox;
-            while (/[1-9]/.test(selectedBox) === false && Checkboard.availableIndexes().includes(selectedBox) === false) {
-                selectedBox = prompt("Select a space to place your move. 1-9");
+            while (Checkboard.place(selectedBox, playerMoveType) === false && /[1-9]/.test(boxNumber) === false) {
+                var selectedBox = Number(prompt("Select a box to place your move in. 1-9"));
             }
-            boxNumber = Number(selectedBox);
+            boxNumber = selectedBox; 
 
         } else {
-            let randomIndex = Math.floor(Math.random() * Checkboard.availableIndexes().length);
-            boxNumber = Checkboard.availableIndexes().at(randomIndex);
+            while (Checkboard.place(randomIndex, playerMoveType) === false) {
+                var randomIndex = Math.floor(Math.random() * 9);
+            }
+            boxNumber = randomIndex;
         }
-
-        console.log(boxNumber);
-        Checkboard.place(boxNumber, playerMoveType);
     }
 
     return {move, playerMoveType, bot};
@@ -77,8 +67,7 @@ let Player = function(XorO, botOrNot){
 let GameManager = function(board){
     let winningSequences = ["123", "159", "147", "258", 
                             "357", "369", "456", "789"]
-    let player1Sequence = "";
-    let player2Sequence = "";
+
     let player1, player2;
     let firstPlayer, secondPlayer;
     const movesMax = 9;
@@ -89,19 +78,25 @@ let GameManager = function(board){
         winningSequences.forEach((s) => {
             if (sequence1 === s) {
                 winner = "Player 1 Wins!";
+                return true;
             } else if (sequence2 === s) {
                 winner = "Player 2 Wins!";
+                return true;
             }
         })
+        return false;
     }
 
     let parseBoard = () => {
+        let player1Sequence = "";
+        let player2Sequence = "";
         let statuses = Checkboard.occupationStatus();
         statuses.forEach((status) => {
             if (status.playerOccupying === player1.playerMoveType) {
                 player1Sequence += `${status.boxNumber}`;
             } else if (status.playerOccupying === player2.playerMoveType) {
                 player2Sequence += `${status.boxNumber}`;
+
             } 
         })
         checkIfWin(player1Sequence, player2Sequence);
@@ -150,11 +145,11 @@ let GameManager = function(board){
         let turnDeterminer = (moveNumber % 2) 
         switch (turnDeterminer) {
             case 0:
-                playerMove(secondPlayer);
+                playerMove(firstPlayer);
                 break;
 
             case 1:
-                playerMove(firstPlayer);
+                playerMove(secondPlayer);
                 break;
         }
     }
@@ -163,19 +158,20 @@ let GameManager = function(board){
         let dice = rollChance();
 
         if (dice < 5) {
-            console.log("Player 2 goes first.")
             firstPlayer = player2;
             secondPlayer = player1;
         } else {
-            console.log("Player 1 goes first.")
             firstPlayer = player1;
             secondPlayer = player2;
         }
+        console.log(`Player ${firstPlayer.playerMoveType} goes first.`)
 
         for (let i = 0; i < movesMax; i++) {
             determinePlayerTurn(i);
+            parseBoard();
+            ++movesTracker;
         }
-        
+
 
         if (movesTracker === movesMax) {
             winner = "It's a tie."
@@ -186,7 +182,7 @@ let GameManager = function(board){
 
     let playerMove = (p) => {
         p.move();
-        parseBoard();
+        console.log(`Player ${p.playerMoveType} has gone.`)
     }
         
     return {parseBoard, gameSetup};
