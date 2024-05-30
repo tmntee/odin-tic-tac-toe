@@ -74,20 +74,8 @@ let GameManager = function(board){
     let movesTracker = 0;
     let winner;
 
-    let checkIfWin = function(sequence1, sequence2) {
-        winningSequences.forEach((s) => {
-            if (sequence1 === s) {
-                winner = "Player 1 Wins!";
-                return true;
-            } else if (sequence2 === s) {
-                winner = "Player 2 Wins!";
-                return true;
-            }
-        })
-        return false;
-    }
 
-    let parseBoard = () => {
+    let checkIfWin = () => {
         let player1Sequence = "";
         let player2Sequence = "";
         let statuses = Checkboard.occupationStatus();
@@ -96,10 +84,25 @@ let GameManager = function(board){
                 player1Sequence += `${status.boxNumber}`;
             } else if (status.playerOccupying === player2.playerMoveType) {
                 player2Sequence += `${status.boxNumber}`;
-
             } 
         })
-        checkIfWin(player1Sequence, player2Sequence);
+        let winOrNot;
+
+        for (let i = 0; i < winningSequences.length; i++) {
+            if (player1Sequence === winningSequences.at(i)) {
+                winner = "Player 1 Wins!";
+                winOrNot = true;
+                break;
+            } else if (player2Sequence === winningSequences.at(i)) {
+                winner = "Player 2 Wins!";
+                winOrNot = true;
+                break;
+            } else {
+                winOrNot = false;
+            }
+        }
+
+        return winOrNot;
     }
 
     let rollChance = () => {
@@ -167,8 +170,10 @@ let GameManager = function(board){
         console.log(`Player ${firstPlayer.playerMoveType} goes first.`)
 
         for (let i = 0; i < movesMax; i++) {
+            if (checkIfWin() === true) {
+                break;
+            }
             determinePlayerTurn(i);
-            parseBoard();
             ++movesTracker;
         }
 
@@ -185,7 +190,7 @@ let GameManager = function(board){
         console.log(`Player ${p.playerMoveType} has gone.`)
     }
         
-    return {parseBoard, gameSetup};
+    return {gameSetup};
 };
 let gameManager = GameManager(Checkboard);
 gameManager.gameSetup();
