@@ -77,12 +77,11 @@ let GameManager = (function(){
 
     let player1, player2;
     let firstPlayer, secondPlayer;
-    const movesMax = 9;
-    let movesTracker = 0;
+
     let winner;
-    let winOrNot;
 
     let checkIfWin = () => {
+        let winOrNot = false;
         let player1Sequence = "";
         let player2Sequence = "";
         let statuses = Checkboard.occupationStatus();
@@ -94,6 +93,9 @@ let GameManager = (function(){
             } 
         })
 
+        console.log(player1Sequence);
+        console.log(player2Sequence);
+
         for (let i = 0; i < winningSequences.length; i++) {
             if (player1Sequence === winningSequences.at(i)) {
                 winner = "Player 1 Wins!";
@@ -104,8 +106,6 @@ let GameManager = (function(){
                 winOrNot = true;
                 break;
             }
-            
-            winOrNot = false;
         }
 
         return winOrNot;
@@ -164,6 +164,8 @@ let GameManager = (function(){
     }
 
     let startGame = () => {
+        const movesMax = 9;
+        let movesTracker = 0;
         let dice = rollChance();
 
         if (dice < 5) {
@@ -198,7 +200,3 @@ let GameManager = (function(){
 
     return {gameSetup};
 })();
-
-GameManager.gameSetup();
-Checkboard.restartBoard();
-GameManager.gameSetup();
