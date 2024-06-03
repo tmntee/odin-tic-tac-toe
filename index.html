@@ -8,6 +8,43 @@
     <script src="script.js" defer></script>
 </head>
 <body>
+    <form class="players-form">
+        <div class="players-display">
+            <div class="player-info p1">
+                player 1 info
+                <input type="text" placeholder="name" required>
+                <div class="player-customization p1">
+                    <div class="color-picker p1">O</div>
+                    <div class="player-avatar p1"></div>
+                    <div class="player-type p1">
+                        <input type="radio" name="playerOrBot" value="player">
+                        <label for="player">Player</label>
     
+                        <input type="radio" name="playerOrBot" value="bot">
+                        <label for="bot">Bot</label>
+                    </div>
+                </div>
+            </div>
+            <h1>vs.</h1>
+            <div class="player-info p2">
+                player 2 info
+                <input type="text" placeholder="name" required>
+                <div class="player-customization p2">
+                    <div class="color-picker p2">O</div>
+                    <div class="player-avatar p2"></div>
+                    <div class="player-type p2">
+                        <input type="radio" name="playerOrBot" value="player" required>
+                        <label for="player">Player</label>
+    
+                        <input type="radio" name="playerOrBot" value="bot" required>
+                        <label for="bot">Bot</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="submit-button-area">
+            <input class="submit-button" type="button" value="Start">
+        </div>
+    </form>
 </body>
 </html>
