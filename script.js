@@ -200,3 +200,17 @@ let GameManager = (function(){
 
     return {gameSetup};
 })();
+
+// player customization scripts 
+
+let player1color, player2color;
+let p1ColorPickerColors = Array.from(document.querySelectorAll("input.color-button.p1"));
+let p2ColorPickerColors = Array.from(document.querySelectorAll("input.color-button.p2"));
+
+p1ColorPickerColors.forEach((button) => {
+    addEventListener('click', (event) => {
+        event.preventDefault();
+        let p1 = document.querySelector("div.player-avatar.p1");
+        p1.style.background = button.value;
+    })
+})
