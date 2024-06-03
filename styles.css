@@ -23,6 +23,11 @@ div.players-display {
     gap: 2em;
 }
 
+div.player-name {
+    display: flex;
+    justify-content: space-between;
+}
+
 div.player-info {
     display: flex;
     flex-direction: column;
@@ -36,6 +41,18 @@ div.player-customization {
 
 div.player-customization.p1 {
     grid-template-columns: 1fr min(40vh, 600px);
+}
+
+div.player-avatar.p1 {
+    background-image: url("images/Drawing.sketchpad.png");
+    background-size: contain;
+    background-color: blue;
+}
+
+div.player-avatar.p2 {
+    background-image: url("images/Drawing.sketchpad\ \(1\).png");
+    background-size: contain;
+    background-color: red;
 }
 
 div.player-type {
