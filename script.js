@@ -203,29 +203,42 @@ let GameManager = (function(){
 
 // player customization scripts 
 
-let p1Color, p2Color;
-let p1ColorPickerColors = Array.from(document.querySelectorAll("button.color-button.p1"));
-let p2ColorPickerColors = Array.from(document.querySelectorAll("button.color-button.p2"));
+let PlayerInformationManager = (function(){
+    let p1Color, p2Color;
+    let p1ColorPickerColors = Array.from(document.querySelectorAll("button.color-button.p1"));
+    let p2ColorPickerColors = Array.from(document.querySelectorAll("button.color-button.p2"));
+    
 
-p1ColorPickerColors.forEach((button) => {
-    button.addEventListener('click', (event) => {
-        event.preventDefault();
-        let p1 = document.getElementById("p1-avatar");
-        p1Color = button.value;
+    let loadColorPickerButtons = (() => {
+        console.log(p1ColorPickerColors);
+        p1ColorPickerColors.forEach((button) => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                let p1 = document.getElementById("p1-avatar");
+                p1Color = button.value;
+    
+                if (p1Color !== p2Color) {
+                    p1.style.backgroundColor = p1Color;
+                }
+            })
+        })
+    
+        p2ColorPickerColors.forEach((button) => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                let p2 = document.getElementById("p2-avatar");
+                p2Color = button.value;
 
-        if (p1Color !== p2Color) {
-            p1.style.backgroundColor = p1Color;
-        }
-    })
-})
+                if (p2Color !== p1Color) {
+                    p2.style.backgroundColor = p2Color;
+                }
+            })
+        })
+    })();
 
-p2ColorPickerColors.forEach((button) => {
-    button.addEventListener('click', (event) => {
-        event.preventDefault();
-        let p2 = document.getElementById("p2-avatar");
-        p2Color = button.value;
-        if (p2Color !== p1Color) {
-            p2.style.backgroundColor = p2Color;
-        }
-    })
-})
+    return [loadColorPickerButtons]
+})();
+
+PlayerInformationManager.loadColorPickerButtons;
+
+
