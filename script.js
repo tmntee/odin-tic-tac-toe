@@ -203,14 +203,29 @@ let GameManager = (function(){
 
 // player customization scripts 
 
-let player1color, player2color;
-let p1ColorPickerColors = Array.from(document.querySelectorAll("input.color-button.p1"));
-let p2ColorPickerColors = Array.from(document.querySelectorAll("input.color-button.p2"));
+let p1Color, p2Color;
+let p1ColorPickerColors = Array.from(document.querySelectorAll("button.color-button.p1"));
+let p2ColorPickerColors = Array.from(document.querySelectorAll("button.color-button.p2"));
 
 p1ColorPickerColors.forEach((button) => {
-    addEventListener('click', (event) => {
+    button.addEventListener('click', (event) => {
         event.preventDefault();
-        let p1 = document.querySelector("div.player-avatar.p1");
-        p1.style.background = button.value;
+        let p1 = document.getElementById("p1-avatar");
+        p1Color = button.value;
+
+        if (p1Color !== p2Color) {
+            p1.style.backgroundColor = p1Color;
+        }
+    })
+})
+
+p2ColorPickerColors.forEach((button) => {
+    button.addEventListener('click', (event) => {
+        event.preventDefault();
+        let p2 = document.getElementById("p2-avatar");
+        p2Color = button.value;
+        if (p2Color !== p1Color) {
+            p2.style.backgroundColor = p2Color;
+        }
     })
 })

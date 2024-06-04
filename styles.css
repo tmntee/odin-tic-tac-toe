@@ -59,13 +59,13 @@ div.player-customization.p1 {
 div.player-avatar.p1 {
     background-image: url("images/Drawing.sketchpad.png");
     background-size: contain;
-    background-color: blue;
+    background-color: red;
 }
 
 div.player-avatar.p2 {
     background-image: url("images/Drawing.sketchpad\ \(1\).png");
     background-size: contain;
-    background-color: red;
+    background-color: blue;
 }
 
 div.player-type {
