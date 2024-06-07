@@ -1,15 +1,15 @@
 let Checkboard = (function(){
-    let box = (number, occupied, XorO) => { return { number, occupied, XorO} };
-    const boardBoxes = [box(1, false, ' '), box(2, false, ' '), box(3, false, ' '), 
-                        box(4, false, ' '), box(5, false, ' '), box(6, false, ' '),
-                        box(7, false, ' '), box(8, false, ' '), box(9, false, ' ')];
+    let box = (number, occupied, playerOccupying) => { return { number, occupied, playerOccupying} };
+    const boardBoxes = [box(1, false, ''), box(2, false, ''), box(3, false, ''), 
+                        box(4, false, ''), box(5, false, ''), box(6, false, ''),
+                        box(7, false, ''), box(8, false, ''), box(9, false, '')];
 
-    let place = (boxNumber, playerType) => {
+    let place = (boxNumber, playerName) => {
         let affectedBox = boardBoxes.find((b) => b.number === boxNumber);
         if (affectedBox !== undefined && affectedBox !== NaN) {
             if (affectedBox.occupied === false) {
                 affectedBox.occupied = true;
-                affectedBox.XorO = playerType;
+                affectedBox.playerOccupying = playerName;
                 displayBoard();
                 return true;
             } else {
@@ -21,9 +21,9 @@ let Checkboard = (function(){
         }
     }
 
-    let displayBoard = function() {
-        console.log(`${boardBoxes.at(0).XorO}  |  ${boardBoxes.at(1).XorO}  |  ${boardBoxes.at(2).XorO}\n${boardBoxes.at(3).XorO}  |  ${boardBoxes.at(4).XorO}  |  ${boardBoxes.at(5).XorO}\n${boardBoxes.at(6).XorO}  |  ${boardBoxes.at(7).XorO}  |  ${boardBoxes.at(8).XorO}`)
-    }
+    //let displayBoard = function() {
+        //console.log(`${boardBoxes.at(0).XorO}  |  ${boardBoxes.at(1).XorO}  |  ${boardBoxes.at(2).XorO}\n${boardBoxes.at(3).XorO}  |  ${boardBoxes.at(4).XorO}  |  ${boardBoxes.at(5).XorO}\n${boardBoxes.at(6).XorO}  |  ${boardBoxes.at(7).XorO}  |  ${boardBoxes.at(8).XorO}`)
+    //}
 
     let occupationStatus = () => {
         boxStatuses = [];
@@ -41,34 +41,34 @@ let Checkboard = (function(){
     let restartBoard = () => {
         boardBoxes.forEach((box) => {
             box.occupied = false;
-            box.XorO = ' ';
+            box.playerOccupying = ' ';
         })
     }
 
-    return {place, displayBoard, occupationStatus, restartBoard};
+    return {place, occupationStatus, restartBoard};
 })();
 
-let Player = function(XorO, botOrNot){
-    const playerMoveType = XorO;
+let Player = function(name, botOrNot, color){
+    const playerName = name;
     let bot = botOrNot;
 
     let move = () => {
         let boxNumber = ''; 
-        if (botOrNot === false) {
-            while (Checkboard.place(selectedBox, playerMoveType) === false && /[1-9]/.test(boxNumber) === false) {
+        if (bot === false) {
+            while (Checkboard.place(selectedBox, playerName) === false && /[1-9]/.test(boxNumber) === false) {
                 var selectedBox = Number(prompt("Select a box to place your move in. 1-9"));
             }
             boxNumber = selectedBox; 
 
         } else {
-            while (Checkboard.place(randomIndex, playerMoveType) === false) {
+            while (Checkboard.place(randomIndex, playerName) === false) {
                 var randomIndex = Math.floor(Math.random() * 9);
             }
             boxNumber = randomIndex;
         }
     }
 
-    return {move, playerMoveType, bot};
+    return {move, playerName, color};
 };
 
 let GameManager = (function(){
@@ -204,13 +204,14 @@ let GameManager = (function(){
 // player customization scripts 
 
 let PlayerInformationManager = (function(){
+    let p1Name, p2Name;
     let p1Color, p2Color;
+    let p1IsRobot, p2IsRobot;
     let p1ColorPickerColors = Array.from(document.querySelectorAll("button.color-button.p1"));
     let p2ColorPickerColors = Array.from(document.querySelectorAll("button.color-button.p2"));
     
 
     let loadColorPickerButtons = (() => {
-        console.log(p1ColorPickerColors);
         p1ColorPickerColors.forEach((button) => {
             button.addEventListener('click', (event) => {
                 event.preventDefault();
@@ -236,9 +237,55 @@ let PlayerInformationManager = (function(){
         })
     })();
 
-    return [loadColorPickerButtons]
+    let submitPlayerInfo = function() {
+        let form = document.getElementById("playerform");
+        if (form.checkValidity() === true) {
+            let p1nameInput = document.querySelector("div.player-header.p1>input");
+
+            if (p1nameInput.value === "") {
+                p1Name = "Player 1";
+            } else {
+                p1Name = p1nameInput.value;
+            }
+
+            let p2nameInput = document.querySelector("div.player-header.p2>input");
+
+            if (p2nameInput.value === "") {
+                p2Name = "Player 2";
+            } else {
+                p2Name = p2nameInput.value;
+            }
+
+            p1IsRobot = document.getElementById("p1-bot").checked;
+            p2IsRobot = document.getElementById("p2-bot").checked;
+
+            p1Color = document.getElementById("p1-avatar").style.backgroundColor;
+            p2Color = document.getElementById("p2-avatar").style.backgroundColor;
+
+
+            console.log(`Player 1 Name: ${p1Name} | Player 1 Color: ${p1Color} | Player 1 Type: ${p1IsRobot}`);
+            console.log(`Player 2 Name: ${p2Name} | Player 1 Color: ${p2Color} | Player 1 Type: ${p2IsRobot}`);
+        } else {
+            form.reportValidity();
+        }
+    };
+
+    let makeAPlayer1 = (() => {
+        return Player(p1Name, p1IsRobot, p1Color);
+    })();
+
+    let makeAPlayer2 = (() => {
+        return Player(p2Name, p2IsRobot, p2Color);
+    })();
+
+    return {loadColorPickerButtons, submitPlayerInfo, makeAPlayer1, makeAPlayer2};
 })();
 
 PlayerInformationManager.loadColorPickerButtons;
 
-
+let submitButton = document.querySelector("input.submit-button");
+console.log(submitButton);
+submitButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    PlayerInformationManager.submitPlayerInfo();
+});

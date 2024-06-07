@@ -11,7 +11,7 @@
     <div class="header">
         <h1>TIC TAC TOE</h1>
     </div>
-    <form class="players-form">
+    <form class="players-form" id="playerform">
         <div class="players-display">
             <div class="player-info p1">
                 <div class="player-header p1">
@@ -41,14 +41,14 @@
                             <button class="color-button p1" style="background-color: indigo;" value="indigo"></button>
                         </div>
                     </div>
-                    <div id="p1-avatar" class="player-avatar p1"></div>
+                    <div id="p1-avatar" class="player-avatar p1" style="background-color: red;"></div>
                     <div class="player-type p1">
                         <div>
                             <input type="radio" name="P1Type" value="player" required>
                             <label for="player">Player</label>
                         </div>
                         <div>
-                            <input type="radio" name="P1Type" value="bot" required>
+                            <input id="p1-bot" type="radio" name="P1Type" value="bot" required>
                             <label for="bot">Bot</label>    
                         </div>
                     </div>
@@ -82,14 +82,14 @@
                             <button class="color-button p2" style="background-color: yellow;" value="yellow"></button>
                             <button class="color-button p2" style="background-color: indigo;" value="indigo"></button>
                         </div></div>
-                    <div id="p2-avatar" class="player-avatar p2"></div>
+                    <div id="p2-avatar" class="player-avatar p2"  style="background-color: blue;"></div>
                     <div class="player-type p2">
                         <div>
                             <input type="radio" name="P2Type" value="player" required>
                             <label for="player">Player</label>
                         </div>
                         <div>
-                            <input type="radio" name="P2Type" value="bot" required>
+                            <input id="p2-bot" type="radio" name="P2Type" value="bot" required>
                             <label for="bot">Bot</label>    
                         </div>
                     </div>
