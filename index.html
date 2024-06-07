@@ -11,48 +11,7 @@
     <div class="header">
         <h1>TIC TAC TOE</h1>
     </div>
-
-
-    <div class="test">
-        <div class="game-area">
-            <div class="player-scoreboard p1">
-                <h1 class="player-name p1">(x)</h1>
-                <div id="p1-avatar" class="player-avatar p1">
     
-                </div>
-                <div class="score p1">
-                    0
-                </div>
-            </div>
-            <div class="checkboard">    
-                <button class="board-button"></button>
-                <button class="board-button"></button>
-                <button class="board-button"></button>
-                <button class="board-button"></button>
-                <button class="board-button"></button>
-                <button class="board-button"></button>
-                <button class="board-button"></button>
-                <button class="board-button"></button>
-                <button class="board-button"></button>
-            </div>
-            <div class="player-scoreboard p2">
-                <h1 class="player-name p2">(o)</h1>
-                <div id="p2-avatar" class="player-avatar p2">
-    
-                </div>
-                <div class="score p2">
-                    0
-                </div>
-            </div>
-        </div>
-        <div class="buttons-area">
-            <button class="restart-game">Restart</button>
-            <button class="go-back">Go Back</button>
-        </div>
-    </div>
-
-
-
     <form class="players-form" id="playerform">
         <div class="players-display">
             <div class="player-info p1">
@@ -142,5 +101,49 @@
             <input class="submit-button" type="button" value="Start">
         </div>
     </form>
+
+    <div class="test" id="game-page">
+        <div class="game-area">
+            <div class="player-scoreboard p1">
+                <h1 class="player-name p1">(x)</h1>
+                <div id="p1-avatar" class="player-avatar p1">
+    
+                </div>
+                <div class="score p1">
+                    Games Won: 0
+                </div>
+            </div>
+            <div class="board-area">
+                <div class="gameboard">    
+                    <button class="board-button"></button>
+                    <button class="board-button"></button>
+                    <button class="board-button"></button>
+                    <button class="board-button"></button>
+                    <button class="board-button"></button>
+                    <button class="board-button"></button>
+                    <button class="board-button"></button>
+                    <button class="board-button"></button>
+                    <button class="board-button"></button>
+                </div>
+                <div class="game-status">
+                    hello
+                </div>
+            </div>
+
+            <div class="player-scoreboard p2">
+                <h1 class="player-name p2">(o)</h1>
+                <div id="p2-avatar" class="player-avatar p2">
+    
+                </div>
+                <div class="score p2">
+                Games Won: 0
+                </div>
+            </div>
+        </div>
+        <div class="buttons-area">
+            <button class="restart-game">Restart</button>
+            <button class="go-back">Go Back</button>
+        </div>
+    </div>
 </body>
 </html>

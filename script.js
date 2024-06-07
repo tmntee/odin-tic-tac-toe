@@ -254,7 +254,13 @@ let PlayerInformationManager = (function(){
 
 let DOMManager = (() => {
 
+    const INITIAL_PAGE = document.getElementById("playerform");
+    const GAME_PAGE = document.getElementById("game-page");
+
     let loadInitialPage = () => {
+        GAME_PAGE.style.display = "none";
+        INITIAL_PAGE.style.display = "flex";
+
         let p1ColorPickerColors = Array.from(document.querySelectorAll("button.color-button.p1"));
         let p2ColorPickerColors = Array.from(document.querySelectorAll("button.color-button.p2"));
         let p1Avatar = document.getElementById("p1-avatar");
@@ -286,11 +292,12 @@ let DOMManager = (() => {
         });
     }
 
-    let loadCheckboardPage = () => {
-        
+    let loadGamePage = () => {
+        GAME_PAGE.style.display = "flex";
+        INITIAL_PAGE.style.display = "none";
     }
     
-    return {loadInitialPage, loadCheckboardPage}
+    return {loadInitialPage, loadGamePage}
 })();
 
 DOMManager.loadInitialPage();
