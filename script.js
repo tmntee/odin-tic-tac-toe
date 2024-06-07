@@ -207,35 +207,6 @@ let PlayerInformationManager = (function(){
     let p1Name, p2Name;
     let p1Color, p2Color;
     let p1IsRobot, p2IsRobot;
-    let p1ColorPickerColors = Array.from(document.querySelectorAll("button.color-button.p1"));
-    let p2ColorPickerColors = Array.from(document.querySelectorAll("button.color-button.p2"));
-    
-
-    let loadColorPickerButtons = (() => {
-        p1ColorPickerColors.forEach((button) => {
-            button.addEventListener('click', (event) => {
-                event.preventDefault();
-                let p1 = document.getElementById("p1-avatar");
-                p1Color = button.value;
-    
-                if (p1Color !== p2Color) {
-                    p1.style.backgroundColor = p1Color;
-                }
-            })
-        })
-    
-        p2ColorPickerColors.forEach((button) => {
-            button.addEventListener('click', (event) => {
-                event.preventDefault();
-                let p2 = document.getElementById("p2-avatar");
-                p2Color = button.value;
-
-                if (p2Color !== p1Color) {
-                    p2.style.backgroundColor = p2Color;
-                }
-            })
-        })
-    })();
 
     let submitPlayerInfo = function() {
         let form = document.getElementById("playerform");
@@ -278,14 +249,48 @@ let PlayerInformationManager = (function(){
         return Player(p2Name, p2IsRobot, p2Color);
     })();
 
-    return {loadColorPickerButtons, submitPlayerInfo, makeAPlayer1, makeAPlayer2};
+    return {submitPlayerInfo, makeAPlayer1, makeAPlayer2};
 })();
 
-PlayerInformationManager.loadColorPickerButtons;
+let DOMManager = (() => {
 
-let submitButton = document.querySelector("input.submit-button");
-console.log(submitButton);
-submitButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    PlayerInformationManager.submitPlayerInfo();
-});
+    let loadInitialPage = () => {
+        let p1ColorPickerColors = Array.from(document.querySelectorAll("button.color-button.p1"));
+        let p2ColorPickerColors = Array.from(document.querySelectorAll("button.color-button.p2"));
+        let p1Avatar = document.getElementById("p1-avatar");
+        let p2Avatar = document.getElementById("p2-avatar");
+    
+        p1ColorPickerColors.forEach((button) => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                if (button.value !== p2Avatar.style.backgroundColor) {
+                    p1Avatar.style.backgroundColor = button.value;
+                }
+            })
+        })
+    
+        p2ColorPickerColors.forEach((button) => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                if (button.value !== p1Avatar.style.backgroundColor) {
+                    p2Avatar.style.backgroundColor = button.value;
+                }
+            })
+        })
+   
+        let submitButton = document.querySelector("input.submit-button");
+        console.log(submitButton);
+        submitButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            PlayerInformationManager.submitPlayerInfo();
+        });
+    }
+
+    let loadCheckboardPage = () => {
+        
+    }
+    
+    return {loadInitialPage, loadCheckboardPage}
+})();
+
+DOMManager.loadInitialPage();
