@@ -34,9 +34,8 @@ div.header {
     border-bottom: var(--border-color) 2px solid;
 }
 
-
 form.players-form {
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: center;
 }
@@ -143,4 +142,24 @@ input.submit-button {
     width: 20%;
 
     box-shadow: 2px 2px 5px black;
+}
+
+div.test {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+div.game-area {
+    display: inherit;
+}
+
+div.checkboard {
+    display: grid;
+    width: min(300px, 50vh);
+    height: min(300px, 50vh);
+    gap: 5px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    background-color: black;
 }
