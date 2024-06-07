@@ -74,6 +74,7 @@ div.player-header {
 div.player-header>input[type=text] {
     width: 50%;
     padding: 0em 10px;
+    font-size: medium;
 }
 
 div.player-info {
@@ -105,7 +106,6 @@ div.player-avatar {
 div.player-avatar.p1 {
     background-image: url("images/Drawing.sketchpad.png");
     background-size: contain;
-    background-color: red;
 }
 
 div.player-avatar.p2 {
