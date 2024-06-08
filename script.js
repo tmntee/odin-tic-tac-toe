@@ -208,6 +208,8 @@ let PlayerInformationManager = (function(){
     let p1Color, p2Color;
     let p1IsRobot, p2IsRobot;
 
+    let player1, player2;
+
     let submitPlayerInfo = function() {
         let form = document.getElementById("playerform");
         if (form.checkValidity() === true) {
@@ -236,20 +238,24 @@ let PlayerInformationManager = (function(){
 
             console.log(`Player 1 Name: ${p1Name} | Player 1 Color: ${p1Color} | Player 1 Type: ${p1IsRobot}`);
             console.log(`Player 2 Name: ${p2Name} | Player 1 Color: ${p2Color} | Player 1 Type: ${p2IsRobot}`);
+            return true;
         } else {
             form.reportValidity();
+            return false;
         }
     };
 
-    let makeAPlayer1 = (() => {
-        return Player(p1Name, p1IsRobot, p1Color);
-    })();
+    let getPlayer1 = () => {
+        player1 = Player(p1Name, p1IsRobot, p1Color)
+        return player1;
+    };
 
-    let makeAPlayer2 = (() => {
-        return Player(p2Name, p2IsRobot, p2Color);
-    })();
+    let getPlayer2 = () => {
+        player2 = Player(p2Name, p2IsRobot, p2Color)
+        return player2;
+    };
 
-    return {submitPlayerInfo, makeAPlayer1, makeAPlayer2};
+    return {submitPlayerInfo, getPlayer1, getPlayer2};
 })();
 
 let DOMManager = (() => {
@@ -288,7 +294,9 @@ let DOMManager = (() => {
         console.log(submitButton);
         submitButton.addEventListener('click', (e) => {
             e.preventDefault();
-            PlayerInformationManager.submitPlayerInfo();
+            if (PlayerInformationManager.submitPlayerInfo()) {
+                DOMManager.loadGamePage();
+            }
         });
     }
 
@@ -301,9 +309,20 @@ let DOMManager = (() => {
 
         p1AvatarGame.style.backgroundColor = document.getElementById("p1-avatar").style.backgroundColor;
         p2AvatarGame.style.backgroundColor = document.getElementById("p2-avatar").style.backgroundColor;
+
+        let p1NameHeader = document.querySelector("h1.player-name.p1");
+        p1NameHeader.textContent = `${PlayerInformationManager.getPlayer1().playerName} (X)`;
+
+        let p2NameHeader = document.querySelector("h1.player-name.p2");
+        p2NameHeader.textContent = `${PlayerInformationManager.getPlayer2().playerName} (O)`;
+
+        let goBackButton = document.querySelector("button.go-back");
+        goBackButton.addEventListener('click', () => {
+            loadInitialPage();
+        })
     }
     
     return {loadInitialPage, loadGamePage}
 })();
 
-DOMManager.loadGamePage();
+DOMManager.loadInitialPage();
