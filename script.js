@@ -295,9 +295,15 @@ let DOMManager = (() => {
     let loadGamePage = () => {
         GAME_PAGE.style.display = "flex";
         INITIAL_PAGE.style.display = "none";
+
+        let p1AvatarGame = document.getElementById("p1-avatar-game");
+        let p2AvatarGame = document.getElementById("p2-avatar-game");
+
+        p1AvatarGame.style.backgroundColor = document.getElementById("p1-avatar").style.backgroundColor;
+        p2AvatarGame.style.backgroundColor = document.getElementById("p2-avatar").style.backgroundColor;
     }
     
     return {loadInitialPage, loadGamePage}
 })();
 
-DOMManager.loadInitialPage();
+DOMManager.loadGamePage();
