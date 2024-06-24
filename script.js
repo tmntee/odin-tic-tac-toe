@@ -1,18 +1,10 @@
-
-let Gameboard = (function(){
-
-
-})
-
-let Player = function(name, botOrNot, color){
+let Player = function(name, botOrNot, color, imageSource){
     const playerName = name;
     let bot = botOrNot;
     let sequence = '';
+    const imageSrc = imageSource;
 
-    let move = () => {
-    }
-
-    return {move, playerName, color, sequence};
+    return { playerName, color, sequence, imageSrc};
 };
 
 let GameManager = (function(){
@@ -20,10 +12,12 @@ let GameManager = (function(){
                             "357", "369", "456", "789"]
     let winner;
 
-    let startGame = (firstPlayer, secondPlayer) => {
+
+    let playGame = (firstPlayer, secondPlayer) => {
         let player1 = firstPlayer;
         let player2 = secondPlayer;
         let currentPlayerMoving;
+
         let gameStatusText = document.querySelector("div.game-status");
         gameStatusText.textContent = "Determining who goes first..."
 
@@ -42,26 +36,26 @@ let GameManager = (function(){
             button.addEventListener('click', () => {
 
                 let buttonImg = button.querySelector("img");
-                if (currentPlayerMoving.playerName === player1.playerName) {
-
-                    buttonImg.setAttribute("src", "images/x.svg");
-
-                } else if (currentPlayerMoving.playerName === player2.playerName) {
-
-                    buttonImg.setAttribute("src", "images/circle.svg");
-                }
+                buttonImg.setAttribute("src", currentPlayerMoving.imageSrc);
 
                 button.appendChild(buttonImg);
                 button.style.backgroundColor = currentPlayerMoving.color;
                 currentPlayerMoving.sequence += button.value;
                 console.log(currentPlayerMoving.sequence);
+
+                if (currentPlayerMoving === player1) {
+                    currentPlayerMoving = player2;
+                    
+                } else {
+                    currentPlayerMoving = player1;
+                }
+                
+                gameStatusText.textContent = `${currentPlayerMoving.playerName}'s turn.`
             })
         })
     }
         
-    
-
-    return {startGame}
+    return {playGame}
 })();
 
 // player customization scripts 
@@ -109,12 +103,12 @@ let PlayerInformationManager = (function(){
     };
 
     let getPlayer1 = () => {
-        player1 = Player(p1Name, p1IsRobot, p1Color)
+        player1 = Player(p1Name, p1IsRobot, p1Color, "images/x.svg")
         return player1;
     };
 
     let getPlayer2 = () => {
-        player2 = Player(p2Name, p2IsRobot, p2Color)
+        player2 = Player(p2Name, p2IsRobot, p2Color, "images/circle.svg")
         return player2;
     };
 
@@ -183,7 +177,7 @@ let DOMManager = (() => {
         goBackButton.addEventListener('click', () => {
             loadInitialPage();
         })
-        GameManager.startGame(PlayerInformationManager.getPlayer1(), PlayerInformationManager.getPlayer2());
+        GameManager.playGame(PlayerInformationManager.getPlayer1(), PlayerInformationManager.getPlayer2());
     }
     
     return {loadInitialPage, loadGamePage}
