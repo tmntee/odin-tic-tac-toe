@@ -12,13 +12,16 @@ let GameManager = (function(){
                             "357", "369", "456", "789"]
     let winner;
 
+    let player1;
+    let player2;
+    let gameStatusText = document.querySelector("div.game-status");
+    let roundTracker = 0;
 
-    let playGame = (firstPlayer, secondPlayer) => {
-        let player1 = firstPlayer;
-        let player2 = secondPlayer;
+    let playGame = (p1, p2) => {
+        player1 = p1;
+        player2 = p2;
         let currentPlayerMoving;
 
-        let gameStatusText = document.querySelector("div.game-status");
         gameStatusText.textContent = "Determining who goes first..."
 
         let diceRoll = Math.floor(Math.random * 10);
@@ -40,19 +43,51 @@ let GameManager = (function(){
 
                 button.appendChild(buttonImg);
                 button.style.backgroundColor = currentPlayerMoving.color;
-                currentPlayerMoving.sequence += button.value;
-                console.log(currentPlayerMoving.sequence);
+                let sequenceString = button.value + " ";
+                currentPlayerMoving.sequence += sequenceString;
 
-                if (currentPlayerMoving === player1) {
-                    currentPlayerMoving = player2;
-                    
+                if (checkIfWinner(currentPlayerMoving.sequence)) {
+                    console.log("someone won");
                 } else {
-                    currentPlayerMoving = player1;
+                    if (currentPlayerMoving === player1) {
+                        currentPlayerMoving = player2;
+                        
+                    } else {
+                        currentPlayerMoving = player1;
+                    }
+                    
+                    gameStatusText.textContent = `${currentPlayerMoving.playerName}'s turn.`
+                    roundTracker++;
                 }
-                
-                gameStatusText.textContent = `${currentPlayerMoving.playerName}'s turn.`
             })
         })
+    }
+
+    let checkIfWinner = (sequence) => {
+        let boxesOccupied = sequence.split(" ");
+        console.log(boxesOccupied);
+        boxesOccupied.sort((a, b) => {
+            return a - b;
+        })
+
+        let sortedSequence = boxesOccupied.join('');
+        console.log(sortedSequence);
+        winningSequences.forEach((seq) => {
+            if (sortedSequence === seq) {
+                if (player1.sequence === sequence) {
+                    winner = player1;
+                } else {
+                    winner = player2;
+                }
+                console.log(winner);
+            }
+        })
+
+        if (winner === undefined) {
+            return false;
+        } else {
+            return true;
+        }
     }
         
     return {playGame}
