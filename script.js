@@ -48,6 +48,8 @@ let GameManager = (function(){
                 let sequenceString = button.value + " ";
                 currentPlayerMoving.sequence += sequenceString;
 
+                button.setAttribute("disabled","");
+
                 if (checkIfWinner(currentPlayerMoving.sequence)) {
                     endGame();
                 } else {
