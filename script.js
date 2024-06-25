@@ -8,14 +8,16 @@ let Player = function(name, botOrNot, color, imageSource){
 };
 
 let GameManager = (function(){
+    const BUTTONS = Array.from(document.querySelectorAll("button.board-button"));
+
     let winningSequences = ["123", "159", "147", "258", 
                             "357", "369", "456", "789"]
     let winner;
-
     let player1;
     let player2;
     let gameStatusText = document.querySelector("div.game-status");
     let roundTracker = 0;
+    const MAX_AMNT_OF_ROUNDS = 9;
 
     let playGame = (p1, p2) => {
         player1 = p1;
@@ -34,8 +36,8 @@ let GameManager = (function(){
         }
         console.log(currentPlayerMoving);
 
-        let buttons = Array.from(document.querySelectorAll("button.board-button"));
-        buttons.forEach((button) => {
+        
+        BUTTONS.forEach((button) => {
             button.addEventListener('click', () => {
 
                 let buttonImg = button.querySelector("img");
@@ -47,7 +49,7 @@ let GameManager = (function(){
                 currentPlayerMoving.sequence += sequenceString;
 
                 if (checkIfWinner(currentPlayerMoving.sequence)) {
-                    console.log("someone won");
+                    endGame();
                 } else {
                     if (currentPlayerMoving === player1) {
                         currentPlayerMoving = player2;
@@ -58,6 +60,9 @@ let GameManager = (function(){
                     
                     gameStatusText.textContent = `${currentPlayerMoving.playerName}'s turn.`
                     roundTracker++;
+                    if (roundTracker === MAX_AMNT_OF_ROUNDS) {
+                        endGame();
+                    }
                 }
             })
         })
@@ -65,13 +70,11 @@ let GameManager = (function(){
 
     let checkIfWinner = (sequence) => {
         let boxesOccupied = sequence.split(" ");
-        console.log(boxesOccupied);
         boxesOccupied.sort((a, b) => {
             return a - b;
         })
 
         let sortedSequence = boxesOccupied.join('');
-        console.log(sortedSequence);
         winningSequences.forEach((seq) => {
             if (sortedSequence === seq) {
                 if (player1.sequence === sequence) {
@@ -79,14 +82,26 @@ let GameManager = (function(){
                 } else {
                     winner = player2;
                 }
-                console.log(winner);
             }
         })
 
         if (winner === undefined) {
             return false;
         } else {
+            console.log(winner);
             return true;
+        }
+    }
+
+    let endGame = () => {
+        BUTTONS.forEach((button) => {
+            button.setAttribute("disabled", '');
+        })
+
+        if (winner !== undefined) {
+            gameStatusText.textContent = `${winner.playerName} won!`;
+        } else {
+            gameStatusText.textContent = "BIG OL TIE. No one won."
         }
     }
         
