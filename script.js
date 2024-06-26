@@ -16,19 +16,17 @@ let GameManager = (function(){
     let winningSequences = /\d*1\d*2\d*3|\d*1\d*5\d*9|\d*1\d*4\d*7|\d*2\d*5\d*8|\d*3\d*5\d*7|\d*3\d*6\d*9|\d*4\d*5\d*6|\d*7\d*8\d*9/
     let winner;
     let player1;
-    let player2;
+    let player2;   
+    let currentPlayerMoving;     
+    let p1wins = 0;
+    let p2wins = 0;
     let gameStatusText = document.querySelector("div.game-status");
     let roundTracker = 0;
     const MAX_AMNT_OF_ROUNDS = 9;
 
-    let playGame = (p1, p2) => {
-        player1 = p1;
-        player2 = p2;
-        let currentPlayerMoving;
-
-        gameStatusText.textContent = "Determining who goes first..."
-
-        let diceRoll = Math.floor(Math.random * 10);
+    let determineTurn = () => {
+        let diceRoll = Math.floor(Math.random() * 10);
+        console.log(diceRoll);
         if (diceRoll < 5) {
             currentPlayerMoving = player1;
             gameStatusText.textContent = `${player1.playerName} goes first.`
@@ -36,13 +34,20 @@ let GameManager = (function(){
             currentPlayerMoving = player2;
             gameStatusText.textContent = `${player2.playerName} goes first.`
         }
-        console.log(currentPlayerMoving);
+    }
 
+    let playGame = (p1, p2) => {
+        player1 = p1;
+        player2 = p2;
+
+        gameStatusText.textContent = "Determining who goes first..."
+
+        setTimeout(determineTurn, 3000);
         
         BUTTONS.forEach((button) => {
             button.addEventListener('click', () => {
 
-                let buttonImg = button.querySelector("img");
+                let buttonImg = document.createElement("img");
                 buttonImg.setAttribute("src", currentPlayerMoving.imageSrc);
 
                 button.appendChild(buttonImg);
@@ -81,7 +86,6 @@ let GameManager = (function(){
         let sortedSequence = boxesOccupied.join('');
 
         if (winningSequences.test(sortedSequence)) {
-            console.log("someone won")
             if (player1.sequence === sequence) {
                 winner = player1;
             } else {
@@ -90,7 +94,6 @@ let GameManager = (function(){
             console.log(winner)
             return true;
         } else {
-            console.log("no one won yet");
             return false;
         }
     }
@@ -102,9 +105,39 @@ let GameManager = (function(){
 
         if (winner !== undefined) {
             gameStatusText.textContent = `${winner.playerName} won!`;
+            if (winner === player1) {
+                ++p1wins;
+            } else {
+                ++p2wins;
+            }
         } else {
             gameStatusText.textContent = "BIG OL TIE. No one won."
         }
+
+        let p1WinsTracker = document.querySelector("div.score.p1");
+        p1WinsTracker.textContent = "Games Won: " + p1wins;
+        let p2WinsTracker = document.querySelector("div.score.p2");
+        p2WinsTracker.textContent = "Games Won: " + p2wins;
+
+        let restartButton = document.querySelector("button.restart-game");
+        restartButton.removeAttribute("disabled");
+        restartButton.addEventListener("click", restartBoard);
+    }
+
+    let restartBoard = () => {
+        roundTracker = 0;
+
+        BUTTONS.forEach((button) => {
+            button.removeAttribute("disabled");
+            button.removeAttribute("style");
+            if (button.hasChildNodes()) {
+                while (button.firstElementChild) {
+                    button.removeChild(button.firstElementChild);
+                }
+            }
+        })
+
+        playGame(player1, player2);
     }
         
     return {playGame}
