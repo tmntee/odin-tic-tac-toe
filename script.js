@@ -10,8 +10,10 @@ let Player = function(name, botOrNot, color, imageSource){
 let GameManager = (function(){
     const BUTTONS = Array.from(document.querySelectorAll("button.board-button"));
 
-    let winningSequences = ["123", "159", "147", "258", 
-                            "357", "369", "456", "789"]
+    //let winningSequences = ["123", "159", "147", "258", 
+    //                        "357", "369", "456", "789"]
+
+    let winningSequences = /\d*1\d*2\d*3|\d*1\d*5\d*9|\d*1\d*4\d*7|\d*2\d*5\d*8|\d*3\d*5\d*7|\d*3\d*6\d*9|\d*4\d*5\d*6|\d*7\d*8\d*9/
     let winner;
     let player1;
     let player2;
@@ -77,21 +79,19 @@ let GameManager = (function(){
         })
 
         let sortedSequence = boxesOccupied.join('');
-        winningSequences.forEach((seq) => {
-            if (sortedSequence === seq) {
-                if (player1.sequence === sequence) {
-                    winner = player1;
-                } else {
-                    winner = player2;
-                }
-            }
-        })
 
-        if (winner === undefined) {
-            return false;
-        } else {
-            console.log(winner);
+        if (winningSequences.test(sortedSequence)) {
+            console.log("someone won")
+            if (player1.sequence === sequence) {
+                winner = player1;
+            } else {
+                winner = player2;
+            }
+            console.log(winner)
             return true;
+        } else {
+            console.log("no one won yet");
+            return false;
         }
     }
 
