@@ -3,57 +3,43 @@ let Player = function(name, botOrNot, color, imageSource){
     let bot = botOrNot;
     let sequence = '';
     const imageSrc = imageSource;
-
     return { playerName, color, sequence, imageSrc};
 };
 
 let GameManager = (function(){
     const BUTTONS = Array.from(document.querySelectorAll("button.board-button"));
 
-    //let winningSequences = ["123", "159", "147", "258", 
-    //                        "357", "369", "456", "789"]
-
-    let winningSequences = /\d*1\d*2\d*3|\d*1\d*5\d*9|\d*1\d*4\d*7|\d*2\d*5\d*8|\d*3\d*5\d*7|\d*3\d*6\d*9|\d*4\d*5\d*6|\d*7\d*8\d*9/
-    let winner;
-    let player1;
-    let player2;   
-    let currentPlayerMoving;     
+    const winningSequences = /\d*1\d*2\d*3|\d*1\d*5\d*9|\d*1\d*4\d*7|\d*2\d*5\d*8|\d*3\d*5\d*7|\d*3\d*6\d*9|\d*4\d*5\d*6|\d*7\d*8\d*9/
+    let winner = null;
+    let player1, player2;   
+    let currentPlayerMoving = null;     
     let p1wins = 0;
     let p2wins = 0;
     let gameStatusText = document.querySelector("div.game-status");
     let roundTracker = 0;
     const MAX_AMNT_OF_ROUNDS = 9;
 
-    let determineTurn = () => {
-        let diceRoll = Math.floor(Math.random() * 10);
-        console.log(diceRoll);
-        if (diceRoll < 5) {
-            currentPlayerMoving = player1;
-            gameStatusText.textContent = `${player1.playerName} goes first.`
-        } else {
-            currentPlayerMoving = player2;
-            gameStatusText.textContent = `${player2.playerName} goes first.`
-        }
-    }
-
-    let playGame = (p1, p2) => {
+    let gameSetup = (p1, p2) => {
         player1 = p1;
         player2 = p2;
+        playGame();
+    }
+
+    let playGame = () => {
 
         gameStatusText.textContent = "Determining who goes first..."
-
         setTimeout(determineTurn, 3000);
-        
+
         BUTTONS.forEach((button) => {
             button.addEventListener('click', () => {
 
-                let buttonImg = document.createElement("img");
+                let buttonImg = button.firstElementChild;
                 buttonImg.setAttribute("src", currentPlayerMoving.imageSrc);
 
-                button.appendChild(buttonImg);
                 button.style.backgroundColor = currentPlayerMoving.color;
                 let sequenceString = button.value + " ";
                 currentPlayerMoving.sequence += sequenceString;
+                console.log(currentPlayerMoving.sequence);
 
                 button.setAttribute("disabled","");
 
@@ -75,6 +61,18 @@ let GameManager = (function(){
                 }
             })
         })
+    }
+
+    let determineTurn = () => {
+        if (winner === null || winner === undefined) {
+            let diceRoll = Math.floor(Math.random() * 10);
+            if (diceRoll < 5) {
+                currentPlayerMoving = player1;
+            } else {
+                currentPlayerMoving = player2;
+            }
+        } 
+        gameStatusText.textContent = `${currentPlayerMoving.playerName} goes first.`;
     }
 
     let checkIfWinner = (sequence) => {
@@ -103,7 +101,7 @@ let GameManager = (function(){
             button.setAttribute("disabled", '');
         })
 
-        if (winner !== undefined) {
+        if (winner !== null) {
             gameStatusText.textContent = `${winner.playerName} won!`;
             if (winner === player1) {
                 ++p1wins;
@@ -121,26 +119,27 @@ let GameManager = (function(){
 
         let restartButton = document.querySelector("button.restart-game");
         restartButton.removeAttribute("disabled");
-        restartButton.addEventListener("click", restartBoard);
+        restartButton.addEventListener("click", restartGame);
     }
 
-    let restartBoard = () => {
+    let restartGame = () => {
         roundTracker = 0;
 
         BUTTONS.forEach((button) => {
             button.removeAttribute("disabled");
             button.removeAttribute("style");
-            if (button.hasChildNodes()) {
-                while (button.firstElementChild) {
-                    button.removeChild(button.firstElementChild);
-                }
-            }
+            button.firstElementChild.setAttribute("src", "");
         })
 
-        playGame(player1, player2);
+        player1.sequence = "";
+        player2.sequence = "";
+        winner.sequence = "";
+        currentPlayerMoving.sequence = "";
+
+        gameStatusText.textContent = `${currentPlayerMoving.playerName}'s turn.`
     }
         
-    return {playGame}
+    return {gameSetup}
 })();
 
 // player customization scripts 
@@ -177,9 +176,6 @@ let PlayerInformationManager = (function(){
             p1Color = document.getElementById("p1-avatar").style.backgroundColor;
             p2Color = document.getElementById("p2-avatar").style.backgroundColor;
 
-
-            console.log(`Player 1 Name: ${p1Name} | Player 1 Color: ${p1Color} | Player 1 Type: ${p1IsRobot}`);
-            console.log(`Player 2 Name: ${p2Name} | Player 1 Color: ${p2Color} | Player 1 Type: ${p2IsRobot}`);
             return true;
         } else {
             form.reportValidity();
@@ -262,7 +258,7 @@ let DOMManager = (() => {
         goBackButton.addEventListener('click', () => {
             loadInitialPage();
         })
-        GameManager.playGame(PlayerInformationManager.getPlayer1(), PlayerInformationManager.getPlayer2());
+        GameManager.gameSetup(PlayerInformationManager.getPlayer1(), PlayerInformationManager.getPlayer2());
     }
     
     return {loadInitialPage, loadGamePage}
