@@ -185,6 +185,18 @@ div.gameboard {
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     background-color: black;
+    border: solid var(--border-color);
+    border-radius: 15px;
+}
+
+button.board-button {
+    background-color: var(--header-bg-color);
+    border: none;
+    border-radius: 10px;
+}
+
+button.board-button:hover {
+    background-color: white;
 }
 
 button.board-button>img {

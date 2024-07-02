@@ -19,13 +19,9 @@ let GameManager = (function(){
     let roundTracker = 0;
     const MAX_AMNT_OF_ROUNDS = 9;
 
-    let gameSetup = (p1, p2) => {
+    let playGame = (p1, p2) => {
         player1 = p1;
         player2 = p2;
-        playGame();
-    }
-
-    let playGame = () => {
 
         gameStatusText.textContent = "Determining who goes first..."
         setTimeout(determineTurn, 3000);
@@ -139,7 +135,7 @@ let GameManager = (function(){
         gameStatusText.textContent = `${currentPlayerMoving.playerName}'s turn.`
     }
         
-    return {gameSetup}
+    return {playGame}
 })();
 
 // player customization scripts 
@@ -258,7 +254,7 @@ let DOMManager = (() => {
         goBackButton.addEventListener('click', () => {
             loadInitialPage();
         })
-        GameManager.gameSetup(PlayerInformationManager.getPlayer1(), PlayerInformationManager.getPlayer2());
+        GameManager.playGame(PlayerInformationManager.getPlayer1(), PlayerInformationManager.getPlayer2());
     }
     
     return {loadInitialPage, loadGamePage}
