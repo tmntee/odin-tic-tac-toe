@@ -3,6 +3,10 @@ let Player = function(name, botOrNot, color, imageSource){
     let bot = botOrNot;
     let sequence = '';
     const imageSrc = imageSource;
+
+    let botMove = (button) => {
+        button.click();
+    }
     return { playerName, color, sequence, imageSrc};
 };
 
@@ -129,12 +133,14 @@ let GameManager = (function(){
 
         player1.sequence = "";
         player2.sequence = "";
-        winner.sequence = "";
         currentPlayerMoving.sequence = "";
+        winner = null;
 
         gameStatusText.textContent = `${currentPlayerMoving.playerName}'s turn.`
+        let restartButton = document.querySelector("button.restart-game");
+        restartButton.setAttribute("disabled", "");
     }
-        
+
     return {playGame}
 })();
 
@@ -250,10 +256,9 @@ let DOMManager = (() => {
         let p2NameHeader = document.querySelector("h1.player-name.p2");
         p2NameHeader.textContent = `${PlayerInformationManager.getPlayer2().playerName} (O)`;
 
-        let goBackButton = document.querySelector("button.go-back");
-        goBackButton.addEventListener('click', () => {
-            loadInitialPage();
-        })
+        let changePlayerButton = document.querySelector("button.change-players");
+        changePlayerButton.addEventListener('click', () => {window.location.reload()});
+
         GameManager.playGame(PlayerInformationManager.getPlayer1(), PlayerInformationManager.getPlayer2());
     }
     
